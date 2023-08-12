@@ -17,7 +17,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true }) //设置唯一账号
   username: string;
 
   @Column()

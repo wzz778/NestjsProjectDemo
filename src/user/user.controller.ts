@@ -7,13 +7,16 @@ import {
   Patch,
   Post,
   Query,
+  UseFilters,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 import { User } from './user.entity';
 import { Logger } from 'nestjs-pino';
+import { TypeormFilter } from 'src/filters/typeorm.filter';
 
 @Controller('user')
+@UseFilters(new TypeormFilter()) //错误 信息返回封装
 export class UserController {
   constructor(
     private userService: UserService,
