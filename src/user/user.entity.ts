@@ -25,13 +25,14 @@ export class User {
 
   // typescript -> 数据库 关联关系 Mapping，
   //一对多
-  @OneToMany(() => Logs, (logs) => logs.user)
+  @OneToMany(() => Logs, (logs) => logs.user, { cascade: true })
   logs: Logs[];
 
-  @ManyToMany(() => Roles, (roles) => roles.users)
+  @ManyToMany(() => Roles, (roles) => roles.users, { cascade: ['insert'] })
   @JoinTable({ name: 'users_roles' })
   roles: Roles[];
 
-  @OneToOne(() => Profile, (profile) => profile.user)
+  //, { cascade: true }设置连表更新
+  @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
   profile: Profile;
 }

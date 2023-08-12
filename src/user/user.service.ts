@@ -45,8 +45,14 @@ export class UserService {
     return this.userRepository.save(userTmp);
   }
   //Partial会拼接没有传的数据，相当于动态sql
-  update(id: number, user: Partial<User>) {
-    return this.userRepository.update(id, user);
+  async update(id: number, user: Partial<User>) {
+    const userTemp = await this.findAddProfile(id);
+    const newUser = this.userRepository.merge(userTemp, user);
+    // 联合模型更新，需要使用save方法或者queryBuilder
+    return this.userRepository.save(newUser);
+    1;
+    // 下面的update方法，只适合单模型的更新，不适合有关系的模型更新
+    // return this.userRepository.update(parseInt(id), newUser);
   }
   remove(id: number) {
     return this.userRepository.delete(id);
