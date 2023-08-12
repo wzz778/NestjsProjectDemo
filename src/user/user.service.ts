@@ -7,8 +7,35 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
-  findAll() {
-    return this.userRepository.find();
+  findAll(query: UserQeury) {
+    //动态查询
+    const { limit, page, username, gender, role } = query;
+    const take = limit || 10;
+    return this.userRepository.find({
+      select: {
+        //设置需要返回的数据
+        id: true,
+        username: true,
+      },
+
+      relations: {
+        //设置连表查询
+        profile: true,
+        roles: true,
+      },
+      where: {
+        //设置动态查询
+        username,
+        profile: {
+          gender,
+        },
+        roles: {
+          id: role,
+        },
+      },
+      take, //设置分页条件
+      skip: (page - 1) * take,
+    });
   }
   find(username: string) {
     return this.userRepository.findOne({ where: { username } });

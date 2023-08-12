@@ -1,4 +1,13 @@
-import { Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
 import { User } from './user.entity';
@@ -15,32 +24,35 @@ export class UserController {
   }
 
   @Get()
-  getUsers(): any {
-    return this.userService.findAll();
+  getUsers(@Query() query: UserQeury): any {
+    //分页查询
+
+    return this.userService.findAll(query);
   }
 
   @Post()
-  addUser(): any {
+  addUser(@Body() dto: any): any {
+    //@Body data参数
     // todo 解析Body参数
-    const user = { username: 'toimc2', password: '123456' } as User;
+    const user = dto as User;
     return this.userService.create(user);
   }
-  @Patch()
-  updateUser(): any {
+  @Patch('/:id')
+  updateUser(@Body() dto: any, @Param('id') id: number): any {
     // todo 传递参数id
     // todo 异常处理
-    const user = { username: 'newname' } as User;
-    return this.userService.update(1, user);
+    const user = dto as User;
+    return this.userService.update(id, user);
   }
 
-  @Delete()
-  deleteUser(): any {
+  @Delete('/:id')
+  deleteUser(@Param('id') id: number): any {
     // todo 传递参数id
-    return this.userService.remove(1);
+    return this.userService.remove(id);
   }
 
   @Get('/findAddProfile')
-  findAddProfile(): any {
-    return this.userService.findAddProfile(1);
+  findAddProfile(@Query() query: any): any {
+    return this.userService.findAddProfile(query.id);
   }
 }
