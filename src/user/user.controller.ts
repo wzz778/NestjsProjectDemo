@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -14,6 +15,8 @@ import { ConfigService } from '@nestjs/config';
 import { User } from './user.entity';
 import { Logger } from 'nestjs-pino';
 import { TypeormFilter } from 'src/filters/typeorm.filter';
+import { CreateUserPipe } from './pipes/create-user.pipe';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('user')
 @UseFilters(new TypeormFilter()) //错误 信息返回封装
@@ -31,9 +34,9 @@ export class UserController {
     //分页查询
     return this.userService.findAll(query);
   }
-
+  //
   @Post()
-  addUser(@Body() dto: any): any {
+  addUser(@Body(CreateUserPipe) dto: CreateUserDto): any {
     //@Body data参数
     // todo 解析Body参数
     const user = dto as User;
@@ -53,8 +56,9 @@ export class UserController {
     return this.userService.remove(id);
   }
 
+  //ParseIntPipe 管道，将 id 转换成数字形式
   @Get('/findAddProfile')
-  findAddProfile(@Query() query: any): any {
+  findAddProfile(@Query('id', ParseIntPipe) query: any): any {
     return this.userService.findAddProfile(query.id);
   }
 }

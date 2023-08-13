@@ -2,11 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { User } from './user.entity';
+import { Logs } from 'src/logs/logs.entity';
+import { Roles } from 'src/roles/roles.entity';
 @Injectable()
 export class UserService {
-  rolesRepository: any;
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Logs) private readonly logsRepository: Repository<Logs>,
+    @InjectRepository(Roles)
+    private readonly rolesRepository: Repository<Roles>,
   ) {}
   findAll(query: UserQeury) {
     //动态查询
@@ -47,10 +51,10 @@ export class UserService {
   }
 
   async create(user: Partial<User>) {
-    // if (!user.roles) {
-    //   const role = await this.rolesRepository.findOne({ where: { id: 1 } });
-    //   user.roles = [role];
-    // }
+    if (!user.roles) {
+      const role = await this.rolesRepository.findOne({ where: { id: 1 } });
+      user.roles = [role];
+    }
     if (user.roles instanceof Array && typeof user.roles[0] === 'number') {
       // {id, name} -> { id } -> [id]
       // 查询所有的用户角色
