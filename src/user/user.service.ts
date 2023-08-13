@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from './user.entity';
 @Injectable()
 export class UserService {
+  rolesRepository: any;
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
@@ -40,7 +41,25 @@ export class UserService {
   find(username: string) {
     return this.userRepository.findOne({ where: { username } });
   }
-  async create(user: User) {
+
+  findOne(id: number) {
+    return this.userRepository.findOne({ where: { id } });
+  }
+
+  async create(user: Partial<User>) {
+    // if (!user.roles) {
+    //   const role = await this.rolesRepository.findOne({ where: { id: 1 } });
+    //   user.roles = [role];
+    // }
+    if (user.roles instanceof Array && typeof user.roles[0] === 'number') {
+      // {id, name} -> { id } -> [id]
+      // 查询所有的用户角色
+      user.roles = await this.rolesRepository.find({
+        where: {
+          id: In(user.roles),
+        },
+      });
+    }
     const userTmp = this.userRepository.create(user);
     return this.userRepository.save(userTmp);
   }

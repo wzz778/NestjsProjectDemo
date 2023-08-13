@@ -29,7 +29,6 @@ export class UserController {
   @Get()
   getUsers(@Query() query: UserQeury): any {
     //分页查询
-
     return this.userService.findAll(query);
   }
 

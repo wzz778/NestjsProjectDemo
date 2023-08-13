@@ -4,9 +4,11 @@ import { UserService } from './user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { LoggerModule } from 'nestjs-pino'; //日志打印工具
+import { Roles } from 'src/roles/roles.entity';
+import { Logs } from 'src/logs/logs.entity';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Logs, Roles]),
     LoggerModule.forRoot({
       pinoHttp: {
         transport: {
@@ -20,5 +22,6 @@ import { LoggerModule } from 'nestjs-pino'; //日志打印工具
   ],
   controllers: [UserController],
   providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}
