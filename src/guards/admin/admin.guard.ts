@@ -19,7 +19,7 @@ export class AdminGuard implements CanActivate {
     // );
     // 普通用户
     // 后面加入更多的逻辑
-    if (user && user.roles.filter((o) => o.id === 2).length > 0) {
+    if (user && user.roles.filter((o) => o.id === 1).length > 0) {
       return true;
     }
     return false;

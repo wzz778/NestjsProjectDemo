@@ -20,9 +20,11 @@ import { CreateUserPipe } from './pipes/create-user.pipe';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AdminGuard } from '../guards/admin/admin.guard';
+import { JwtGuard } from 'src/guards/jwt.guard';
 
 @Controller('user')
 @UseFilters(new TypeormFilter()) //错误 信息返回封装
+@UseGuards(JwtGuard) //守卫，设置token
 export class UserController {
   constructor(
     private userService: UserService,
@@ -33,7 +35,6 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt')) //守卫，设置token
   getUsers(@Query() query: UserQeury): any {
     //分页查询
     return this.userService.findAll(query);
@@ -54,7 +55,7 @@ export class UserController {
     return this.userService.update(id, user);
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(AdminGuard) //管理员守卫，不是id为2的不行
   @Delete('/:id')
   deleteUser(@Param('id') id: number): any {
     // todo 传递参数id
