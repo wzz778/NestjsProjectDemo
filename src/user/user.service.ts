@@ -4,6 +4,7 @@ import { In, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { Logs } from 'src/logs/logs.entity';
 import { Roles } from 'src/roles/roles.entity';
+import * as argon2 from 'argon2';
 @Injectable()
 export class UserService {
   constructor(
@@ -68,7 +69,10 @@ export class UserService {
       });
     }
     const userTmp = this.userRepository.create(user);
-    return this.userRepository.save(userTmp);
+    // 对用户密码使用argon2加密
+    userTmp.password = await argon2.hash(userTmp.password);
+    const res = await this.userRepository.save(userTmp);
+    return res;
   }
   //Partial会拼接没有传的数据，相当于动态sql
   async update(id: number, user: Partial<User>) {
