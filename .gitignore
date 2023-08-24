@@ -5,7 +5,6 @@ build/
 tmp/
 temp/
 dist/
-logs/
 # General
 .DS_Store
 .AppleDouble

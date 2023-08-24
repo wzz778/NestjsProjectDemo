@@ -28,11 +28,12 @@ export class User {
   @OneToMany(() => Logs, (logs) => logs.user, { cascade: true })
   logs: Logs[];
 
+  //多对多
   @ManyToMany(() => Roles, (roles) => roles.users, { cascade: ['insert'] })
   @JoinTable({ name: 'users_roles' })
   roles: Roles[];
 
-  //, { cascade: true }设置连表更新
+  //, { cascade: true }设置连表更新 一对一
   @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
   profile: Profile;
 }
